@@ -35,37 +35,39 @@ def get_utility(rew, cost):
 
 ## getting data	
 
-conn = psycopg2.connect(database='live_database', host='10.10.21.18', user='postgres', port='5432', password='1234')
+if __name__ == "__main__":
 
-trial_cursor = conn.cursor()
-neuron_cursor = conn.cursor()
+	conn = psycopg2.connect(database='live_database', host='10.10.21.18', user='postgres', port='5432', password='1234')
 
-selectTrialData = "SELECT cost_level, reward_level, decision_made, tasktypedone, sessionid, localindex FROM trial_table where tasktypedone!='L2'"
-selectNeuronData = "SELECT celltrace, tasktypedone, sessionid, localindex FROM inscopix_table where tasktypedone!='L2'"
+	trial_cursor = conn.cursor()
+	neuron_cursor = conn.cursor()
 
-trial_cursor.execute(selectTrialData)
-neuron_cursor.execute(selectNeuronData)
+	selectTrialData = "SELECT cost_level, reward_level, decision_made, tasktypedone, sessionid, localindex FROM trial_table where tasktypedone!='L2'"
+	selectNeuronData = "SELECT celltrace, tasktypedone, sessionid, localindex FROM inscopix_table where tasktypedone!='L2'"
 
-trial_table = trial_cursor.fetchall()
-neuron_table = neuron_cursor.fetchall()
+	trial_cursor.execute(selectTrialData)
+	neuron_cursor.execute(selectNeuronData)
 
-trial_df = pd.DataFrame(trial_table)
-neuron_df = pd.DataFrame(neuron_table)
+	trial_table = trial_cursor.fetchall()
+	neuron_table = neuron_cursor.fetchall()
 
-trial_df.columns = ['cost_level', 'reward_level', 'decision_made', 'tasktypedone', 'sessionid', 'localindex']
-neuron_df.columns=['celltrace', 'tasktypedone', 'sessionid', 'localindex']
+	trial_df = pd.DataFrame(trial_table)
+	neuron_df = pd.DataFrame(neuron_table)
 
-joint_df = pd.merge(trial_df, neuron_df, how='outer', on=['sessionid', 'localindex'])
+	trial_df.columns = ['cost_level', 'reward_level', 'decision_made', 'tasktypedone', 'sessionid', 'localindex']
+	neuron_df.columns=['celltrace', 'tasktypedone', 'sessionid', 'localindex']
 
-## cleaning up data 
+	joint_df = pd.merge(trial_df, neuron_df, how='outer', on=['sessionid', 'localindex'])
 
-joint_df['reward_level'] = joint_df['reward_level'].fillna('0')
-joint_df['cost_level'] = joint_df['cost_level'].fillna('0')
+	## cleaning up data 
 
-joint_df['utility'] = joint_df.apply(lambda x: get_utility(x['reward_level'], x['cost_level']),axis=1)
-joint_df= joint_df[joint_df['utility'] != 0]
+	joint_df['reward_level'] = joint_df['reward_level'].fillna('0')
+	joint_df['cost_level'] = joint_df['cost_level'].fillna('0')
 
-joint_df['celltrace'] = joint_df['celltrace'].apply(lambda x: yaml.load(x, Loader=yaml.Loader))
-joint_df['avg_celltrace'] = joint_df['celltrace'].apply(lambda x: get_mean(x))
+	joint_df['utility'] = joint_df.apply(lambda x: get_utility(x['reward_level'], x['cost_level']),axis=1)
+	joint_df= joint_df[joint_df['utility'] != 0]
 
-joint_df.to_csv("inscopix_df.xlsx")
+	joint_df['celltrace'] = joint_df['celltrace'].apply(lambda x: yaml.load(x, Loader=yaml.Loader))
+	joint_df['avg_celltrace'] = joint_df['celltrace'].apply(lambda x: get_mean(x))
+
+	joint_df.to_csv("inscopix_df.xlsx")
