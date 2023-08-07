@@ -37,7 +37,7 @@ def get_utility(rew, cost):
 
 if __name__ == "__main__":
 
-	conn = psycopg2.connect(database='live_database', host='10.10.21.18', user='postgres', port='5432', password='1234')
+	conn = psycopg2.connect(database='live_database', host='10.10.21.128', user='postgres', port='5432', password='1234')
 
 	trial_cursor = conn.cursor()
 	neuron_cursor = conn.cursor()
