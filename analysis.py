@@ -55,7 +55,7 @@ plt.ylabel('avg cell trace across selected neurons + trials')
 plt.ylim(40,200)
 plt.title(title)
 plt.legend()
-plt.savefig("fig_1.1",format="pdf")
+plt.savefig("fig_1",format="pdf")
 
 plt.figure(2)
 
@@ -68,7 +68,7 @@ plt.ylabel('avg cell trace across selected neurons + trials')
 plt.ylim(40,200)
 plt.title(title)
 plt.legend()
-plt.savefig("fig_2.1",format="pdf")
+plt.savefig("fig_2",format="pdf")
 
 plt.figure(3)
 
@@ -81,7 +81,7 @@ plt.ylabel('avg cell trace across selected neurons + trials')
 plt.ylim(40,200)
 plt.title(title)
 plt.legend()
-plt.savefig("fig_3.1",format="pdf")
+plt.savefig("fig_3",format="pdf")
 
 plt.figure(4)
 
@@ -94,7 +94,7 @@ plt.ylabel('avg cell trace across selected neurons + trials')
 plt.ylim(40,200)
 plt.title(title)
 plt.legend()
-plt.savefig("fig_4.1",format="pdf")
+plt.savefig("fig_4",format="pdf")
 
 
 excel_file = "inscopix_analysis.xlsx"
