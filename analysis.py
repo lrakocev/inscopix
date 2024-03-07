@@ -37,10 +37,15 @@ avg_rew_cost_3  = avg_rew_cost_3.reset_index()
 serr_rew_cost_3 = cost_3_df.groupby(['reward_level'])[avg_name].sem()
 serr_rew_cost_3 = serr_rew_cost_3.reset_index()
 
-
 avg_cost = fin_df.groupby(['cost_level'])[avg_name].mean()
 avg_cost = avg_cost.reset_index()
 
+avg_cost_1 = fin_df[fin_df.cost_level == 1].avg.tolist()
+avg_cost_3 = fin_df[fin_df.cost_level == 3].avg.tolist()
+
+avg_cost_1_no_nans = [x for x in avg_cost_1 if not np.isnan(x)]
+
+print(avg_cost_1_no_nans)
 serr_cost = fin_df.groupby(['cost_level'])[avg_name].sem()
 serr_cost = serr_cost.reset_index()
 
@@ -85,13 +90,14 @@ plt.savefig("fig_3",format="pdf")
 
 plt.figure(4)
 
-title = "COST BARS: " + "".join(neurons)
+title = "COST BOXPLOT: " + "".join(neurons)
 # utility against trace
-plt.bar(avg_cost['cost_level'], avg_cost[avg_name])
-plt.errorbar(avg_cost['cost_level'], avg_cost[avg_name], serr_cost[avg_name])
+#plt.bar(avg_cost['cost_level'], avg_cost[avg_name])
+#plt.errorbar(avg_cost['cost_level'], avg_cost[avg_name], serr_cost[avg_name])
+plt.boxplot([avg_cost_1_no_nans,avg_cost_3])
 plt.xlabel('cost level')
 plt.ylabel('avg cell trace across selected neurons + trials')
-plt.ylim(40,200)
+#plt.ylim(40,200)
 plt.title(title)
 plt.legend()
 plt.savefig("fig_4",format="pdf")
